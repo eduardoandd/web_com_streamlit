@@ -33,20 +33,26 @@ df=pd.read_csv('smartphone_cleaned_v5.csv')
 
 #FILTRANDO POR MARCA 
 marcas = df['brand_name'].value_counts().index
-marca = st.selectbox('Marca', sorted(marcas))
+marca = st.sidebar.selectbox('Marca', sorted(marcas))
 filtro_marca = df[df['brand_name']==marca]
 
 #FILTRANDO POR MARCA E PREÇO
 precos = filtro_marca['price'].value_counts().index
-preco = st.selectbox('Preço',sorted(precos))
+preco = st.sidebar.selectbox('Preço',sorted(precos))
 filtro_preco = df[(df['price']==preco) & (df['brand_name']==marca)]
 
 
-exibir_grafico = st.checkbox('Exibir gráfico')
+exibir_grafico = st.sidebar.checkbox('Exibir gráfico')
 if exibir_grafico:  
     filtro_preco.set_index('model', inplace=True)
     st.bar_chart(filtro_preco['price'])
+    col1,col2 = st.columns(2)
+
+    col2.bar_chart(filtro_preco['processor_speed'])
+    col2.bar_chart(filtro_preco['num_cores'])
+    col2.bar_chart(filtro_preco['ram_capacity'])
+    col2.line_chart(filtro_preco['battery_capacity'])
 
 
-
+st.session_state['df_cel']=df
 
