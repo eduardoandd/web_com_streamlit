@@ -54,6 +54,7 @@ x=st.sidebar.slider('Defina o ano', min_value=2000,max_value=2021)
 mes_df_grafico_2020=df_grafico[df_grafico.index.year==x]
 mes_df_grafico_2020['MES 2020'] = mes_df_grafico_2020.index.month
 mes_df_grafico_2020.set_index('MES 2020', inplace=True)
+
 # st.line_chart(mes_df_grafico_2020)
 
 # df_grafico_2020= df_grafico
