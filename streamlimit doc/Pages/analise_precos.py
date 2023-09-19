@@ -2,10 +2,12 @@ import streamlit as st
 import pandas as pd
 import time
 
+st.markdown("# Análise de preços dos combustiveis")
+
 
 #VARIAÇÃO DO PREÇO DA GASOLINA
-df1 = pd.read_csv('gasolina_2000+.csv')
-df2 = pd.read_csv('gasolina_2010+.csv')
+df1 = pd.read_csv('Pages\gasolina_2000+.csv')
+df2 = pd.read_csv('Pages\gasolina_2010+.csv')
 df=pd.concat([df1,df2])
 
 pd.to_datetime(df['DATA INICIAL'])
@@ -34,15 +36,12 @@ def gera_grafico_din(opcao,ano):
     mes_df_grafico_2020.set_index('MES 2020', inplace=True)
     return mes_df_grafico_2020
 
-
-ano=st.sidebar.slider('Defina o ano', min_value=2000,max_value=2021)
+ano=st.sidebar.slider('Defina o ano', min_value=2004,max_value=2021)
 #gera_grafico_din(opcao)
 
-st.text_input('Produto', key='name_produto')
-produto_input=st.session_state.name_produto
-
-
 if st.sidebar.checkbox('Exibir barra de pesquisa'):
+    st.text_input('Produto', key='name_produto')
+    produto_input=st.session_state.name_produto
     df_grafico = df[(df['PRODUTO']==produto_input)]
     st.line_chart(gera_grafico_din(produto_input, ano))
 else:

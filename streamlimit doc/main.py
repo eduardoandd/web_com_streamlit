@@ -26,8 +26,8 @@ import time
 # st.table(dataframe)
 
 #VARIAÇÃO DO PREÇO DA GASOLINA
-df1 = pd.read_csv('gasolina_2000+.csv')
-df2 = pd.read_csv('gasolina_2010+.csv')
+df1 = pd.read_csv('Pages\gasolina_2000+.csv')
+df2 = pd.read_csv('Pages\gasolina_2010+.csv')
 df=pd.concat([df1,df2])
 
 pd.to_datetime(df['DATA INICIAL'])
