@@ -19,8 +19,6 @@ type(df.iloc[1,-1])
 
 df_produtos=df[['PRODUTO']]
 
-
-
 @st.cache_data
 def gera_grafico_din(opcao,ano):
     df_grafico = df[(df['PRODUTO']==opcao)]
@@ -32,13 +30,48 @@ def gera_grafico_din(opcao,ano):
     mes_df_grafico_2020=df_grafico[df_grafico.index.year==ano]
     mes_df_grafico_2020['MES 2020'] = mes_df_grafico_2020.index.month
     mes_df_grafico_2020.set_index('MES 2020', inplace=True)
+    
     return mes_df_grafico_2020
 
 def gera_histograma(df,opcao,ano):
     df = gera_grafico_din(opcao,ano)
     fig = go.Figure(data=[go.Histogram(x=df['PREÇO MÉDIO REVENDA'], marker=dict(color='Orange'))])
+    fig.update_layout(
+        title=f'Variação de preço do(a) {opcao} no ano de {ano}',
+        xaxis_title='Valores',
+        yaxis_title='Frequência',
+    )
     
     return fig.show()
+
+def gera_heatmap(ano,opcao):
+    df_gasolina=df[df['PRODUTO']==opcao]
+    df_gasolina.set_index('ANO/MES',inplace=True)
+    
+    df_gasolina=df_gasolina[df_gasolina.index.year==ano]
+    df_gasolina.index=df_gasolina.index.month
+    
+    colorscale_custom = [
+        [0, 'rgb(0, 0, 255)'],     # Azul para valores próximos a 0
+        [0.5, 'rgb(255, 255, 255)'], # Branco para valores intermediários
+        [1, 'rgb(255, 0, 0)']      # Vermelho para valores próximos a 1
+    ]
+    
+    fig_heatmap=go.Figure(data=go.Heatmap(
+        z=df_gasolina['PREÇO MÉDIO REVENDA'],
+        x=df_gasolina['ESTADO'],
+        y=df_gasolina.index,
+        colorscale=colorscale_custom  
+    ))
+    
+    fig_heatmap.update_layout(
+        plot_bgcolor= '#262730',      # Fundo preto
+        paper_bgcolor='#262730',     # Fundo do gráfico preto
+        font=dict(color='#527B9D',size=9)   # Texto em branco
+    )
+    
+    
+    return fig_heatmap.show()
 
 if st.sidebar.checkbox('Exibir barra de pesquisa'):
     ano=st.sidebar.slider('Defina o ano', min_value=2004,max_value=2021)
@@ -49,11 +82,17 @@ if st.sidebar.checkbox('Exibir barra de pesquisa'):
 else:    
     opcao=st.sidebar.selectbox(
         'Selecione o produto',
-        df_produtos.drop_duplicates()
+        placeholder='tester',
+        options=df_produtos.drop_duplicates(),
+        
     )
     ano=st.sidebar.slider('Defina o ano', min_value=2004,max_value=2021)
-    df=gera_grafico_din(opcao,ano)
-    st.line_chart(df)
-    gera_histograma(df,opcao,ano)
+    df_=gera_grafico_din(opcao,ano)
+    st.line_chart(df_)
+    if st.sidebar.button('Gerar Histograma', type='primary'):
+        gera_histograma(df_,opcao,ano)
+    
+    if st.sidebar.button('Gerar HeatMap', type='primary'):
+        gera_heatmap(ano,opcao)
     
 
