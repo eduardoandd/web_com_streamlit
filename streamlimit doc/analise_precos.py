@@ -7,8 +7,8 @@ st.markdown("# Análise de preços dos combustiveis")
 
 
 #VARIAÇÃO DO PREÇO DA GASOLINA
-df1 = pd.read_csv('Pages/gasolina_2000+.csv')
-df2 = pd.read_csv('Pages/gasolina_2010+.csv')
+df1 = pd.read_csv('gasolina_2000+.csv')
+df2 = pd.read_csv('gasolina_2010+.csv')
 df=pd.concat([df1,df2])
 
 pd.to_datetime(df['DATA INICIAL'])
@@ -70,7 +70,6 @@ def gera_heatmap(ano,opcao):
         font=dict(color='#527B9D',size=9)   # Texto em branco
     )
     
-    
     return fig_heatmap.show()
 
 if st.sidebar.checkbox('Exibir barra de pesquisa'):
@@ -84,15 +83,18 @@ else:
         'Selecione o produto',
         placeholder='tester',
         options=df_produtos.drop_duplicates(),
-        
     )
     ano=st.sidebar.slider('Defina o ano', min_value=2004,max_value=2021)
     df_=gera_grafico_din(opcao,ano)
     st.line_chart(df_)
     if st.sidebar.button('Gerar Histograma', type='primary'):
+        status_carregamento=st.text("Gerando Histogama..")
         gera_histograma(df_,opcao,ano)
+        status_carregamento.text('Histograma gerado com sucesso!')
     
     if st.sidebar.button('Gerar HeatMap', type='primary'):
+        status_carregamento=st.text("Gerando HeatMap..")
         gera_heatmap(ano,opcao)
+        status_carregamento.text('HeatMap gerado com sucesso!')
     
 
